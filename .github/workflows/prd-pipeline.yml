@@ -21,7 +21,7 @@ jobs: # jobs [required] - one or more jobs, sequence of steps (which run command
     uses: ./.github/workflows/test.yml
   deploy:
         needs: test
-        environment: main
+        environment: prd
         runs-on: ubuntu-latest
         steps:
           - uses: actions/checkout@v4

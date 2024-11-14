@@ -11,6 +11,6 @@ public class StudentTest {
 
   @Test
   public void studentSaysHello() {
-    assertThat(student.sayHello(), containsString("Hllo"));
+    assertThat(student.sayHello(), containsString("Hello"));
   }
 }

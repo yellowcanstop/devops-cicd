@@ -1,0 +1,43 @@
+### 2 SPACES FOR IDENTATION ###
+### 1. DEFINING WORKFLOW ###
+### 2. CORE COMPONENTS ###
+name: Java CICD with Maven # name [optional] - is displayed on your repos action page
+
+### 3. EVENTS / TRIGGERS ###
+# https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/events-that-trigger-workflows ###
+### 4. WORKFLOW EXECUTION ###
+on: # on [required] - name of Github event that triggers the workflow
+  push: 
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+### jobs: runners (servers that execute jobs, can be custom) + steps (shell commands/predefined actions) ###
+jobs: # jobs [required] - one or more jobs, sequence of steps (which run commands)
+  build: 
+    uses: ./.github/workflows/build.yml
+  test:
+    needs: build
+    uses: ./.github/workflows/test.yml
+  deploy:
+        needs: test
+        environment: main
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v4
+          - name: Set up JDK 17
+            uses: actions/setup-java@v4
+            with:
+              java-version: "17"
+              distribution: "temurin"
+              cache: maven
+          - name: Download artifacts
+            uses: actions/download-artifact@v4
+            with:
+              name: target-files
+          - name: Display structure of downloaded files
+            run: ls -R
+          - name: Deploy
+          ### 9. ENVIRONMENT VARIABLES ###
+          ### 10. SECRETS ###
+            run: echo "Deploying with ${{ secrets.AWS_ACCESS_KEY_ID }} and ${{ secrets.AWS_SECRET_ACCESS_KEY }} at ${{ vars.CONNECTION_STRING }}"
